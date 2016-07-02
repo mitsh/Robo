@@ -485,6 +485,28 @@ class RoboFile extends \Robo\Tasks
     }
 
     /**
+     * Demonstrate the use of a builder to chain multiple tasks
+     * together into a collection, which is executed once constructed.
+     *
+     * For demonstration purposes only; this could, of course, be done
+     * with a single FileSystemStack.
+     */
+    public function tryBuilder()
+    {
+        $this->builder()
+            ->taskFileSystemStack()
+                ->mkdir('a')
+                ->touch('a/a.txt')
+            ->taskFileSystemStack()
+                ->mkdir('a/b')
+                ->touch('a/b/b.txt')
+            ->taskFileSystemStack()
+                ->mkdir('a/b/c')
+                ->touch('a/b/c/c.txt')
+            ->run();
+    }
+
+    /**
      * Demonstrates Robo temporary directory usage.
      */
     public function tryTmpDir()

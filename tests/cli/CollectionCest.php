@@ -18,6 +18,36 @@ class CollectionCest
         $I->amInPath(codecept_data_dir().'sandbox');
     }
 
+    public function toRunMultipleTasksViaATaskBuilder(CliGuy $I)
+    {
+        // This tests creating multiple tasks in a single builder,
+        // which implicitly adds them to a collection.  To keep things
+        // simple, we are only going to use taskFileSystemStack.  It
+        // would be possible, of course, to do these operations with
+        // a single FileSystemStack, but our goal is to test creating
+        // multiple tasks with a builder, and ensure that a propper
+        // collection is built.
+        $I->taskFileSystemStack()
+                ->mkdir('a')
+                ->touch('a/a.txt')
+            ->taskFileSystemStack()
+                ->mkdir('b')
+                ->touch('b/b.txt')
+            ->taskFileSystemStack()
+                ->mkdir('c')
+                ->touch('c/c.txt')
+            ->run();
+
+        // All of the tasks created by the builder should be added
+        // to a collection, and `run()` should run them all.
+        $I->seeDirFound('a');
+        $I->seeFileFound('a/a.txt');
+        $I->seeDirFound('b');
+        $I->seeFileFound('b/b.txt');
+        $I->seeDirFound('c');
+        $I->seeFileFound('c/c.txt');
+    }
+
     public function toCreateDirViaCollection(CliGuy $I)
     {
         // Set up a collection to add tasks to

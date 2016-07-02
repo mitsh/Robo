@@ -35,6 +35,20 @@ trait TaskAccessor
         if (!preg_match('#^task#', $name)) {
             $name = "task$name";
         }
-        return $this->getContainer()->get($name, $args);
+        $builder = $this->builder();
+        $task = $this->getContainer()->get($name, $args);
+
+        // $builder will now behave like $task, but will also
+        // have access to
+        $builder->addTaskToBuilder($task);
+        return $builder;
+    }
+
+    /**
+     * Get a builder
+     * @return \Robo\TaskBuilder
+     */
+    protected function builder() {
+        return $this->getContainer()->get('taskBuilder');
     }
 }
