@@ -22,18 +22,18 @@ class CollectionCest
     {
         // This tests creating multiple tasks in a single builder,
         // which implicitly adds them to a collection.  To keep things
-        // simple, we are only going to use taskFileSystemStack.  It
+        // simple, we are only going to use taskFilesystemStack.  It
         // would be possible, of course, to do these operations with
-        // a single FileSystemStack, but our goal is to test creating
+        // a single FilesystemStack, but our goal is to test creating
         // multiple tasks with a builder, and ensure that a propper
         // collection is built.
-        $I->taskFileSystemStack()
+        $I->taskFilesystemStack()
                 ->mkdir('a')
                 ->touch('a/a.txt')
-            ->taskFileSystemStack()
+            ->taskFilesystemStack()
                 ->mkdir('b')
                 ->touch('b/b.txt')
-            ->taskFileSystemStack()
+            ->taskFilesystemStack()
                 ->mkdir('c')
                 ->touch('c/c.txt')
             ->run();

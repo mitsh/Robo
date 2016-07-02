@@ -297,17 +297,18 @@ class RoboFile extends \Robo\Tasks
         $this->pharBuild()->run();
 
         $this->_rename('robo.phar', 'robo-release.phar');
-        $this->taskGitStack()->checkout('gh-pages')->run();
-        $this->taskFilesystemStack()
-            ->remove('robo.phar')
-            ->rename('robo-release.phar', 'robo.phar')
-            ->run();
-        $this->taskGitStack()
-            ->add('robo.phar')
-            ->commit('robo.phar published')
-            ->push('origin', 'gh-pages')
-            ->checkout('master')
-            ->run();
+        $this->builder()
+            ->taskGitStack()
+                ->checkout('gh-pages')
+            ->taskFilesystemStack()
+                ->remove('robo.phar')
+                ->rename('robo-release.phar', 'robo.phar')
+            ->taskGitStack()
+                ->add('robo.phar')
+                ->commit('robo.phar published')
+                ->push('origin', 'gh-pages')
+                ->checkout('master')
+                ->run();
     }
 
     /**
@@ -489,18 +490,18 @@ class RoboFile extends \Robo\Tasks
      * together into a collection, which is executed once constructed.
      *
      * For demonstration purposes only; this could, of course, be done
-     * with a single FileSystemStack.
+     * with a single FilesystemStack.
      */
     public function tryBuilder()
     {
         $this->builder()
-            ->taskFileSystemStack()
+            ->taskFilesystemStack()
                 ->mkdir('a')
                 ->touch('a/a.txt')
-            ->taskFileSystemStack()
+            ->taskFilesystemStack()
                 ->mkdir('a/b')
                 ->touch('a/b/b.txt')
-            ->taskFileSystemStack()
+            ->taskFilesystemStack()
                 ->mkdir('a/b/c')
                 ->touch('a/b/c/c.txt')
             ->run();

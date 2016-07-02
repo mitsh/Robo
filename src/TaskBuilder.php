@@ -22,7 +22,8 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
      * then the task accessor will fetch the builder to use from this
      * method, and the new task will go into the existing builder instance.
      */
-    protected function builder() {
+    protected function builder()
+    {
         return $this;
     }
 
@@ -61,9 +62,13 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
      */
     public function __call($fn, $args)
     {
-        // We need to check for methods of our traits explicitly.
-        if (method_exists($this, $fn)) {
-            return call_user_func_array([$this, $fn], $args);
+        // We need to check for task methods of our traits explicitly.
+        // The reason is that these are all protected methods, and cannot
+        // be called directly; if someone tries, then php will call __call(),
+        // and we end up here.  This method is part of the class, though,
+        // and can call protected methods, either directly or via call_user_func_array.
+        if (preg_match('#^task#', $fn) && method_exists($this, $fn)) {
+            return $this->build($fn, $args);
         }
         // If the method called is a method of the current task,
         // then call through to the current task's setter method.
@@ -79,9 +84,23 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     }
 
     /**
+     * Construct the desired task via the container and add it to this builder.
+     */
+    public function build($name, $args)
+    {
+        $task = $this->getContainer()->get($name, $args);
+        if (!$task) {
+            throw new RuntimeException("Can not construct task $name");
+        }
+        $this->addTaskToBuilder($task);
+        return $this;
+    }
+
+    /**
      * When we run the task builder, run everything in the collection.
      */
-    public function run() {
+    public function run()
+    {
         if ($this->collection) {
             return $this->collection->run();
         }
