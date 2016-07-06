@@ -38,7 +38,7 @@ class ApplicationTest extends \Codeception\TestCase\Test
         $this->commandFactory = $container->get('commandFactory');
         $this->roboCommandFileInstance = new TestedRoboFile;
         $this->roboCommandFileInstance->setContainer(\Robo\Config::getContainer());
-        $commandList = Runner::createCommandsFromClass($this->commandFactory, $this->roboCommandFileInstance);
+        $commandList = $this->commandFactory->createCommandsFromClass($this->roboCommandFileInstance);
         foreach ($commandList as $command) {
             $this->app->add($command);
         }

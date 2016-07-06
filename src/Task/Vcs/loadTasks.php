@@ -24,7 +24,7 @@ trait loadTasks
      * @param string $pathToSvn
      * @return SvnStack
      */
-    public function taskSvnStack($username = '', $password = '', $pathToSvn = 'svn')
+    protected function taskSvnStack($username = '', $password = '', $pathToSvn = 'svn')
     {
         return $this->task(__FUNCTION__, $username, $password, $pathToSvn);
     }
@@ -33,7 +33,7 @@ trait loadTasks
      * @param string $pathToGit
      * @return GitStack
      */
-    public function taskGitStack($pathToGit = 'git')
+    protected function taskGitStack($pathToGit = 'git')
     {
         return $this->task(__FUNCTION__, $pathToGit);
     }

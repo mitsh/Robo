@@ -24,7 +24,7 @@ trait loadTasks
      * @param null $pathToComposer
      * @return Install
      */
-    public function taskComposerInstall($pathToComposer = null)
+    protected function taskComposerInstall($pathToComposer = null)
     {
         return $this->task(__FUNCTION__, $pathToComposer);
     }
@@ -33,7 +33,7 @@ trait loadTasks
      * @param null $pathToComposer
      * @return Update
      */
-    public function taskComposerUpdate($pathToComposer = null)
+    protected function taskComposerUpdate($pathToComposer = null)
     {
         return $this->task(__FUNCTION__, $pathToComposer);
     }
@@ -42,7 +42,7 @@ trait loadTasks
      * @param null $pathToComposer
      * @return DumpAutoload
      */
-    public function taskComposerDumpAutoload($pathToComposer = null)
+    protected function taskComposerDumpAutoload($pathToComposer = null)
     {
         return $this->task(__FUNCTION__, $pathToComposer);
     }
@@ -51,7 +51,7 @@ trait loadTasks
      * @param null $pathToComposer
      * @return Validate
      */
-    public function taskComposerValidate($pathToComposer = null)
+    protected function taskComposerValidate($pathToComposer = null)
     {
         return $this->task(__FUNCTION__, $pathToComposer);
     }

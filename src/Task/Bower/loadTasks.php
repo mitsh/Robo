@@ -22,7 +22,7 @@ trait loadTasks
      * @param null $pathToBower
      * @return Install
      */
-    public function taskBowerInstall($pathToBower = null)
+    protected function taskBowerInstall($pathToBower = null)
     {
         return $this->task(__FUNCTION__, $pathToBower);
     }
@@ -31,7 +31,7 @@ trait loadTasks
      * @param null $pathToBower
      * @return Update
      */
-    public function taskBowerUpdate($pathToBower = null)
+    protected function taskBowerUpdate($pathToBower = null)
     {
         return $this->task(__FUNCTION__, $pathToBower);
     }

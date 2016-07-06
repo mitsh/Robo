@@ -28,7 +28,7 @@ trait loadTasks
      * @param string $filename
      * @return Changelog
      */
-    public function taskChangelog($filename = 'CHANGELOG.md')
+    protected function taskChangelog($filename = 'CHANGELOG.md')
     {
         return $this->task(__FUNCTION__, $filename);
     }
@@ -37,7 +37,7 @@ trait loadTasks
      * @param $filename
      * @return GenerateMarkdownDoc
      */
-    public function taskGenDoc($filename)
+    protected function taskGenDoc($filename)
     {
         return $this->task(__FUNCTION__, $filename);
     }
@@ -46,7 +46,7 @@ trait loadTasks
      * @param $filename
      * @return GenerateMarkdownDoc
      */
-    public function taskGenTask($className, $wrapperClassName = '')
+    protected function taskGenTask($className, $wrapperClassName = '')
     {
         return $this->task(__FUNCTION__, $className, $wrapperClassName);
     }
@@ -55,7 +55,7 @@ trait loadTasks
      * @param string $pathToSemVer
      * @return SemVer
      */
-    public function taskSemVer($pathToSemVer = '.semver')
+    protected function taskSemVer($pathToSemVer = '.semver')
     {
         return $this->task(__FUNCTION__, $pathToSemVer);
     }
@@ -64,7 +64,7 @@ trait loadTasks
      * @param int $port
      * @return PhpServer
      */
-    public function taskServer($port = 8000)
+    protected function taskServer($port = 8000)
     {
         return $this->task(__FUNCTION__, $port);
     }
@@ -73,7 +73,7 @@ trait loadTasks
      * @param $filename
      * @return PackPhar
      */
-    public function taskPackPhar($filename)
+    protected function taskPackPhar($filename)
     {
         return $this->task(__FUNCTION__, $filename);
     }
@@ -82,7 +82,7 @@ trait loadTasks
      * @param $tag
      * @return GitHubRelease
      */
-    public function taskGitHubRelease($tag)
+    protected function taskGitHubRelease($tag)
     {
         return $this->task(__FUNCTION__, $tag);
     }
@@ -91,7 +91,7 @@ trait loadTasks
      * @param string|array $url
      * @return OpenBrowser
      */
-    public function taskOpenBrowser($url)
+    protected function taskOpenBrowser($url)
     {
         return $this->task(__FUNCTION__, $url);
     }

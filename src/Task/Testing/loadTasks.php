@@ -24,7 +24,7 @@ trait loadTasks
      * @param null $pathToCodeception
      * @return Codecept
      */
-    public function taskCodecept($pathToCodeception = null)
+    protected function taskCodecept($pathToCodeception = null)
     {
         return $this->task(__FUNCTION__, $pathToCodeception);
     }
@@ -33,7 +33,7 @@ trait loadTasks
      * @param null $pathToPhpUnit
      * @return PHPUnit
      */
-    public function taskPhpUnit($pathToPhpUnit = null)
+    protected function taskPhpUnit($pathToPhpUnit = null)
     {
         return $this->task(__FUNCTION__, $pathToPhpUnit);
     }
@@ -42,7 +42,7 @@ trait loadTasks
      * @param null $pathToPhpspec
      * @return Phpspec
      */
-    public function taskPhpspec($pathToPhpspec = null)
+    protected function taskPhpspec($pathToPhpspec = null)
     {
         return $this->task(__FUNCTION__, $pathToPhpspec);
     }
@@ -51,7 +51,7 @@ trait loadTasks
      * @param null $pathToAtoum
      * @return Atoum
      */
-    public function taskAtoum($pathToAtoum = null)
+    protected function taskAtoum($pathToAtoum = null)
     {
         return $this->task(__FUNCTION__, $pathToAtoum);
     }

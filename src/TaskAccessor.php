@@ -45,8 +45,6 @@ trait TaskAccessor
      */
     protected function builder()
     {
-        $builder = $this->getContainer()->get('taskBuilder');
-        $builder->addTaskProvider($this);
-        return $builder;
+        return $this->getContainer()->get('taskBuilder');
     }
 }

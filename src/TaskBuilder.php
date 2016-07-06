@@ -14,7 +14,6 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
 
     protected $collection;
     protected $currentTask;
-    protected $taskProviders = [];
     protected $addFunction = 'add';
 
     /**
@@ -27,15 +26,6 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     protected function builder()
     {
         return $this;
-    }
-
-    /**
-     * Add any object that contains a selection of `taskFoo` methods
-     * to make these available via the task builder.
-     */
-    public function addTaskProvider($taskProvider)
-    {
-        $this->taskProviders[] = $taskProvider;
     }
 
     /**
@@ -126,19 +116,12 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
      */
     public function __call($fn, $args)
     {
-        // All of the standard Robo tasks are available as part of the
-        // builder, thanks to the `use LoadAllTasks` directive at the
-        // top of this class.  To add custom tasks, use `addTaskProvider`
-        // to add an instance of an object that contains `task` methods.
-        // The Robo runner does this automatically for RoboFiles;
-        // @see TaskAccessor::builder()
-        if (preg_match('#^task#', $fn)) {
-            foreach ($this->taskProviders as $taskProvider) {
-                if (method_exists($taskProvider, $fn)) {
-                    $task = call_user_func_array([$taskProvider, $fn], $args);
-                    return $this->addTaskToBuilder($task);
-                }
-            }
+        // Calls to $this->builder()->taskFoo() cannot be made directly,
+        // because all of the task methods are protected.  These calls will
+        // therefore end up here.  If the method name begins with 'task',
+        // then it is eligible to be used with the builder.
+        if (preg_match('#^task[A-Z]#', $fn)) {
+            return $this->build($fn, $args);
         }
         // If the method called is a method of the current task,
         // then call through to the current task's setter method.
