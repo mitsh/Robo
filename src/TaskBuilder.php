@@ -15,6 +15,7 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     protected $collection;
     protected $currentTask;
     protected $taskProviders = [];
+    protected $addFunction = 'add';
 
     /**
      * Override TaskAccessor::builder(). By default, a new builder
@@ -28,9 +29,43 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
         return $this;
     }
 
+    /**
+     * Add any object that contains a selection of `taskFoo` methods
+     * to make these available via the task builder.
+     */
     public function addTaskProvider($taskProvider)
     {
         $this->taskProviders[] = $taskProvider;
+    }
+
+    /**
+     * The next task added to this builder will be added as a rollback.
+     * Example: `$this->builder()->rollback()->taskDeleteDir(...);
+     * @return type
+     */
+    public function rollback()
+    {
+        // Ensure that we have a collection if we are going to add
+        // a rollback function.
+        $this->getCollection();
+        // The next task added will be a rollback task rather than
+        // an ordinary task for execution.
+        $this->addFunction = 'rollback';
+    }
+
+    /**
+     * Add a function callback as a rollback task.
+     * @param callable $rollbackCode
+     * @return type
+     */
+    public function rollbackCode(callable $rollbackCode)
+    {
+        $this->getCollection()->rollbackCode($rollbackCode);
+    }
+
+    public function addCode(callable $code)
+    {
+        $this->getCollection()->addCode($code);
     }
 
     /**
@@ -41,16 +76,39 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     {
         // Postpone creation of the collection until the second time
         // we are called. At that time, $this->currentTask will already
-        // be populated.
+        // be populated.  We call 'getCollection()' so that it will
+        // create the collection and add the current task to it.
         if (!$this->collection && $this->currentTask) {
-            $this->collection = $this->collection();
-            $this->collection->add($this->currentTask);
+            $this->getCollection();
         }
         $this->currentTask = $currentTask;
         if ($this->collection) {
-            $this->collection->add($this->currentTask);
+            $this->addToCollection($currentTask);
         }
         return $this;
+    }
+
+    /**
+     * Return the collection of tasks associated with this builder.
+     *
+     * @return Collection
+     */
+    protected function getCollection()
+    {
+        return $this->addToCollection($this->currentTask);
+    }
+
+    protected function addToCollection($task)
+    {
+        if (!$this->collection) {
+            $this->collection = $this->collection();
+        }
+        if ($task) {
+            $fn = $this->addFunction;
+            $this->collection->$fn($task);
+            $this->addFunction = 'add';
+        }
+        return $this->collection;
     }
 
     /**
