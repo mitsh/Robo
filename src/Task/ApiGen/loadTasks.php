@@ -21,7 +21,7 @@ trait loadTasks
      * @param null $pathToApiGen
      * @return \Robo\Task\ApiGen\ApiGen
      */
-    protected function taskApiGen($pathToApiGen = null)
+    public function taskApiGen($pathToApiGen = null)
     {
         return $this->task(__FUNCTION__, $pathToApiGen);
     }

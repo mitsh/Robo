@@ -1,6 +1,7 @@
 <?php
 require_once codecept_data_dir() . 'TestedRoboFile.php';
 
+use Robo\Runner;
 use Robo\Container\RoboContainer;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
@@ -37,7 +38,7 @@ class ApplicationTest extends \Codeception\TestCase\Test
         $this->commandFactory = $container->get('commandFactory');
         $this->roboCommandFileInstance = new TestedRoboFile;
         $this->roboCommandFileInstance->setContainer(\Robo\Config::getContainer());
-        $commandList = $this->commandFactory->createCommandsFromClass($this->roboCommandFileInstance);
+        $commandList = Runner::createCommandsFromClass($this->commandFactory, $this->roboCommandFileInstance);
         foreach ($commandList as $command) {
             $this->app->add($command);
         }

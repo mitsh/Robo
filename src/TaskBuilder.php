@@ -14,6 +14,7 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
 
     protected $collection;
     protected $currentTask;
+    protected $taskProviders = [];
 
     /**
      * Override TaskAccessor::builder(). By default, a new builder
@@ -25,6 +26,11 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     protected function builder()
     {
         return $this;
+    }
+
+    public function addTaskProvider($taskProvider)
+    {
+        $this->taskProviders[] = $taskProvider;
     }
 
     /**
@@ -62,13 +68,19 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
      */
     public function __call($fn, $args)
     {
-        // We need to check for task methods of our traits explicitly.
-        // The reason is that these are all protected methods, and cannot
-        // be called directly; if someone tries, then php will call __call(),
-        // and we end up here.  This method is part of the class, though,
-        // and can call protected methods, either directly or via call_user_func_array.
-        if (preg_match('#^task#', $fn) && method_exists($this, $fn)) {
-            return $this->build($fn, $args);
+        // All of the standard Robo tasks are available as part of the
+        // builder, thanks to the `use LoadAllTasks` directive at the
+        // top of this class.  To add custom tasks, use `addTaskProvider`
+        // to add an instance of an object that contains `task` methods.
+        // The Robo runner does this automatically for RoboFiles;
+        // @see TaskAccessor::builder()
+        if (preg_match('#^task#', $fn)) {
+            foreach ($this->taskProviders as $taskProvider) {
+                if (method_exists($taskProvider, $fn)) {
+                    $task = call_user_func_array([$taskProvider, $fn], $args);
+                    return $this->addTaskToBuilder($task);
+                }
+            }
         }
         // If the method called is a method of the current task,
         // then call through to the current task's setter method.
@@ -92,8 +104,7 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
         if (!$task) {
             throw new RuntimeException("Can not construct task $name");
         }
-        $this->addTaskToBuilder($task);
-        return $this;
+        return $this->addTaskToBuilder($task);
     }
 
     /**

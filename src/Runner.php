@@ -123,12 +123,36 @@ class Runner
 
         // Register commands for all of the public methods in the RoboFile.
         $commandFactory = $container->get('commandFactory');
-        $commandList = $commandFactory->createCommandsFromClass($roboCommandFileInstance);
+        $commandList = static::createCommandsFromClass($commandFactory, $roboCommandFileInstance);
         foreach ($commandList as $command) {
             $app->add($command);
         }
         $statusCode = $app->run($input, $output);
         return $statusCode;
+    }
+
+    public static function createCommandsFromClass($commandFactory, $roboCommandFileInstance)
+    {
+        $commandInfoList = $commandFactory->getCommandInfoListFromClass($roboCommandFileInstance);
+        $commandFactory->registerCommandHooksFromClassInfo($commandInfoList, $roboCommandFileInstance);
+        $commandList = $commandFactory->createSelectedCommandsFromClassInfo(
+            $commandInfoList,
+            $roboCommandFileInstance,
+            function ($commandInfo) {
+                // Skip methods that have a @hook annotation
+                if ($commandInfo->hasAnnotation('hook')) {
+                    return false;
+                }
+                // Include methods that have a @command annotation
+                if ($commandInfo->hasAnnotation('command')) {
+                    return true;
+                }
+                // We will include all of the other public methods, except
+                // for those that start with 'task'
+                return !preg_match('#^task[A-Z]#', $commandInfo->getMethodName());
+            }
+        );
+        return $commandList;
     }
 
     /**

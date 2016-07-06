@@ -25,12 +25,12 @@ trait loadTasks
      * @param $command
      * @return Exec
      */
-    protected function taskExec($command)
+    public function taskExec($command)
     {
         return $this->task(__FUNCTION__, $command);
     }
 
-    protected function taskExecStack()
+    public function taskExecStack()
     {
         return $this->task(__FUNCTION__);
     }
@@ -38,7 +38,7 @@ trait loadTasks
     /**
      * @return ParallelExec
      */
-    protected function taskParallelExec()
+    public function taskParallelExec()
     {
         return $this->task(__FUNCTION__);
     }
@@ -47,7 +47,7 @@ trait loadTasks
      * @param $command
      * @return SymfonyCommand
      */
-    protected function taskSymfonyCommand($command)
+    public function taskSymfonyCommand($command)
     {
         return $this->task(__FUNCTION__, $command);
     }
@@ -55,7 +55,7 @@ trait loadTasks
     /**
      * @return Watch
      */
-    protected function taskWatch()
+    public function taskWatch()
     {
         return $this->task(__FUNCTION__, $this);
     }

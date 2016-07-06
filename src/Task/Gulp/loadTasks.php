@@ -22,7 +22,7 @@ trait loadTasks
      * @param null $pathToGulp
      * @return Run
      */
-    protected function taskGulpRun($task = 'default', $pathToGulp = null)
+    public function taskGulpRun($task = 'default', $pathToGulp = null)
     {
         return $this->task(__FUNCTION__, $task, $pathToGulp);
     }

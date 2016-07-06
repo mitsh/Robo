@@ -23,7 +23,7 @@ trait loadTasks
      *
      * @return Archive
      */
-    protected function taskPack($filename)
+    public function taskPack($filename)
     {
         return $this->task(__FUNCTION__, $filename);
     }
@@ -33,7 +33,7 @@ trait loadTasks
      *
      * @return Extract
      */
-    protected function taskExtract($filename)
+    public function taskExtract($filename)
     {
         return $this->task(__FUNCTION__, $filename);
     }

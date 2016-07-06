@@ -24,7 +24,7 @@ trait loadTasks
     * @param $input
     * @return Minify
     */
-    protected function taskMinify($input)
+    public function taskMinify($input)
     {
         return $this->task(__FUNCTION__, $input);
     }
@@ -33,7 +33,7 @@ trait loadTasks
      * @param $input
      * @return ImageMinify
      */
-    protected function taskImageMinify($input)
+    public function taskImageMinify($input)
     {
         return $this->task(__FUNCTION__, $input);
     }
@@ -42,7 +42,7 @@ trait loadTasks
     * @param $input
     * @return Less
     */
-    protected function taskLess($input)
+    public function taskLess($input)
     {
         return $this->task(__FUNCTION__, $input);
     }
@@ -51,7 +51,7 @@ trait loadTasks
      * @param $input
      * @return Scss
      */
-    protected function taskScss($input)
+    public function taskScss($input)
     {
         return $this->task(__FUNCTION__, $input);
     }
