@@ -30,6 +30,11 @@ class CollectionCest
         $I->taskFilesystemStack()
                 ->mkdir('a')
                 ->touch('a/a.txt')
+            ->rollbackCode(
+                    function() use ($I) {
+                        $I->_deleteDir('a');
+                    }
+                )
             ->taskFilesystemStack()
                 ->mkdir('b')
                 ->touch('b/b.txt')
@@ -46,6 +51,40 @@ class CollectionCest
         $I->seeFileFound('b/b.txt');
         $I->seeDirFound('c');
         $I->seeFileFound('c/c.txt');
+    }
+
+
+    public function toRollbackAfterFailureViaATaskBuilder(CliGuy $I)
+    {
+        // This tests creating multiple tasks in a single builder,
+        // which implicitly adds them to a collection.  To keep things
+        // simple, we are only going to use taskFilesystemStack.  It
+        // would be possible, of course, to do these operations with
+        // a single FilesystemStack, but our goal is to test creating
+        // multiple tasks with a builder, and ensure that a propper
+        // collection is built.
+        $I->taskFilesystemStack()
+                ->mkdir('a')
+                ->touch('a/a.txt')
+            ->rollbackCode(
+                    function() use ($I) {
+                        $I->_deleteDir('a');
+                    }
+                )
+            ->taskFilesystemStack()
+                ->mkdir('b')
+                ->touch('b/b.txt')
+            ->taskFilesystemStack()
+                ->mkdir('c')
+                ->touch('c/c.txt')
+                ->touch('d/d.txt')
+            ->run();
+
+        // All of the tasks created by the builder should be added
+        // to a collection, and `run()` should run them all.
+        $I->dontSeeFileFound('a/a.txt');
+        $I->dontSeeFileFound('b/b.txt');
+        $I->dontSeeFileFound('c/c.txt');
     }
 
     public function toCreateDirViaCollection(CliGuy $I)

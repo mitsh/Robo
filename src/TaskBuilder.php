@@ -41,6 +41,7 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
         // The next task added will be a rollback task rather than
         // an ordinary task for execution.
         $this->addFunction = 'rollback';
+        return $this;
     }
 
     /**
@@ -51,11 +52,13 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     public function rollbackCode(callable $rollbackCode)
     {
         $this->getCollection()->rollbackCode($rollbackCode);
+        return $this;
     }
 
     public function addCode(callable $code)
     {
         $this->getCollection()->addCode($code);
+        return $this;
     }
 
     /**
