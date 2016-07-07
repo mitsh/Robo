@@ -14,7 +14,6 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
 
     protected $collection;
     protected $currentTask;
-    protected $addFunction = 'add';
 
     /**
      * Override TaskAccessor::builder(). By default, a new builder
@@ -29,18 +28,15 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
     }
 
     /**
-     * The next task added to this builder will be added as a rollback.
-     * Example: `$this->builder()->rollback()->taskDeleteDir(...);
+     * Add a rollback task to the builder.
+     * Example: `$this->builder()->rollback($this->taskDeleteDir(...));`
      * @return type
      */
-    public function rollback()
+    public function rollback($task)
     {
         // Ensure that we have a collection if we are going to add
         // a rollback function.
-        $this->getCollection();
-        // The next task added will be a rollback task rather than
-        // an ordinary task for execution.
-        $this->addFunction = 'rollback';
+        $this->getCollection()->rollback($task);
         return $this;
     }
 
@@ -97,9 +93,7 @@ class TaskBuilder implements ContainerAwareInterface, TaskInterface
             $this->collection = $this->collection();
         }
         if ($task) {
-            $fn = $this->addFunction;
-            $this->collection->$fn($task);
-            $this->addFunction = 'add';
+            $this->collection->add($task);
         }
         return $this->collection;
     }

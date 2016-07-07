@@ -27,7 +27,7 @@ class CollectionCest
         // a single FilesystemStack, but our goal is to test creating
         // multiple tasks with a builder, and ensure that a propper
         // collection is built.
-        $I->taskFilesystemStack()
+        $result = $I->taskFilesystemStack()
                 ->mkdir('a')
                 ->touch('a/a.txt')
             ->rollbackCode(
@@ -36,55 +36,53 @@ class CollectionCest
                     }
                 )
             ->taskFilesystemStack()
-                ->mkdir('b')
-                ->touch('b/b.txt')
+                ->mkdir('a/b')
+                ->touch('a/b/b.txt')
             ->taskFilesystemStack()
-                ->mkdir('c')
-                ->touch('c/c.txt')
+                ->mkdir('a/c')
+                ->touch('a/c/c.txt')
             ->run();
+
+        $I->assertEquals(0, $result->getExitCode(), $result->getMessage());
 
         // All of the tasks created by the builder should be added
         // to a collection, and `run()` should run them all.
         $I->seeDirFound('a');
         $I->seeFileFound('a/a.txt');
-        $I->seeDirFound('b');
-        $I->seeFileFound('b/b.txt');
-        $I->seeDirFound('c');
-        $I->seeFileFound('c/c.txt');
+        $I->seeDirFound('a/b');
+        $I->seeFileFound('a/b/b.txt');
+        $I->seeDirFound('a/c');
+        $I->seeFileFound('a/c/c.txt');
     }
-
 
     public function toRollbackAfterFailureViaATaskBuilder(CliGuy $I)
     {
-        // This tests creating multiple tasks in a single builder,
-        // which implicitly adds them to a collection.  To keep things
-        // simple, we are only going to use taskFilesystemStack.  It
-        // would be possible, of course, to do these operations with
-        // a single FilesystemStack, but our goal is to test creating
-        // multiple tasks with a builder, and ensure that a propper
-        // collection is built.
-        $I->taskFilesystemStack()
-                ->mkdir('a')
-                ->touch('a/a.txt')
-            ->rollbackCode(
-                    function() use ($I) {
-                        $I->_deleteDir('a');
-                    }
+        // This is like the previous test, toRunMultipleTasksViaATaskBuilder,
+        // except we force an error at the end, and confirm that the
+        // rollback function is called.
+        $result = $I->taskFilesystemStack()
+                ->mkdir('j')
+                ->touch('j/j.txt')
+            ->rollback(
+                    $I->taskDeleteDir('j')
                 )
             ->taskFilesystemStack()
-                ->mkdir('b')
-                ->touch('b/b.txt')
+                ->mkdir('j/k')
+                ->touch('j/k/k.txt')
             ->taskFilesystemStack()
-                ->mkdir('c')
-                ->touch('c/c.txt')
-                ->touch('d/d.txt')
+                ->mkdir('j/k/m')
+                ->touch('j/k/m/m.txt')
+            ->taskCopyDir(['doesNotExist' => 'copied'])
             ->run();
+
+        $I->assertEquals(1, $result->getExitCode(), $result->getMessage());
 
         // All of the tasks created by the builder should be added
         // to a collection, and `run()` should run them all.
-        $I->dontSeeFileFound('a/a.txt');
-        $I->dontSeeFileFound('b/b.txt');
-        $I->dontSeeFileFound('c/c.txt');
+        $I->dontSeeFileFound('q/q.txt');
+        $I->dontSeeFileFound('j/j.txt');
+        $I->dontSeeFileFound('j/k/k.txt');
+        $I->dontSeeFileFound('j/k/m/m.txt');
     }
 
     public function toCreateDirViaCollection(CliGuy $I)

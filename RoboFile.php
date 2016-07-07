@@ -507,6 +507,25 @@ class RoboFile extends \Robo\Tasks
             ->run();
     }
 
+    public function tryBuilderRollback()
+    {
+        return $this->builder()
+            ->taskFilesystemStack()
+                ->mkdir('g')
+                ->touch('g/g.txt')
+            ->rollback(
+                    $this->taskDeleteDir('g')
+                )
+            ->taskFilesystemStack()
+                ->mkdir('g/h')
+                ->touch('g/h/h.txt')
+            ->taskFilesystemStack()
+                ->mkdir('g/h/i/c')
+                ->touch('g/h/i/i.txt')
+            ->taskExec('ls xyzzy' . date('U'))
+                ->dir('/tmp');
+    }
+
     /**
      * Demonstrates Robo temporary directory usage.
      */
