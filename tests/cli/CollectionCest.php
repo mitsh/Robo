@@ -30,11 +30,9 @@ class CollectionCest
         $result = $I->taskFilesystemStack()
                 ->mkdir('a')
                 ->touch('a/a.txt')
-            ->rollbackCode(
-                    function() use ($I) {
-                        $I->_deleteDir('a');
-                    }
-                )
+            ->rollback(
+                $I->taskDeleteDir('a')
+            )
             ->taskFilesystemStack()
                 ->mkdir('a/b')
                 ->touch('a/b/b.txt')
@@ -64,8 +62,8 @@ class CollectionCest
                 ->mkdir('j')
                 ->touch('j/j.txt')
             ->rollback(
-                    $I->taskDeleteDir('j')
-                )
+                $I->taskDeleteDir('j')
+            )
             ->taskFilesystemStack()
                 ->mkdir('j/k')
                 ->touch('j/k/k.txt')

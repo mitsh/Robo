@@ -514,8 +514,8 @@ class RoboFile extends \Robo\Tasks
                 ->mkdir('g')
                 ->touch('g/g.txt')
             ->rollback(
-                    $this->taskDeleteDir('g')
-                )
+                $this->taskDeleteDir('g')
+            )
             ->taskFilesystemStack()
                 ->mkdir('g/h')
                 ->touch('g/h/h.txt')
