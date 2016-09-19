@@ -10,26 +10,18 @@ use Robo\Result;
 use Robo\Task\BaseTask;
 use Robo\Contract\TaskInterface;
 use Robo\Collection\Collection;
-use Robo\Config;
+use Robo\Robo;
 
 class CollectionTest extends \Codeception\TestCase\Test
 {
-    protected $container;
-
     /**
      * @var \CodeGuy
      */
     protected $guy;
 
-    protected function _before()
-    {
-        $this->container = Config::getContainer();
-        $this->container->addServiceProvider(\Robo\Collection\Collection::getCollectionServices());
-    }
-
     public function testAfterFilters()
     {
-        $collection = $this->container->get('collection');
+        $collection = new Collection();
 
         $taskA = new CollectionTestTask('a', 'value-a');
         $taskB = new CollectionTestTask('b', 'value-b');
@@ -53,7 +45,7 @@ class CollectionTest extends \Codeception\TestCase\Test
         // verify(var_export($result->getData(), true))->equals('');
 
         // Ensure that the results have the correct key values
-        verify(implode(',', array_keys($result->getData())))->equals('a-name,b-name,special-name');
+        verify(implode(',', array_keys($result->getData())))->equals('a-name,b-name,special-name,time');
 
         // Verify that all of the after tasks ran in
         // the correct order.
@@ -68,7 +60,7 @@ class CollectionTest extends \Codeception\TestCase\Test
 
     public function testBeforeFilters()
     {
-        $collection = $this->container->get('collection');
+        $collection = new Collection();
 
         $taskA = new CollectionTestTask('a', 'value-a');
         $taskB = new CollectionTestTask('b', 'value-b');
@@ -87,7 +79,7 @@ class CollectionTest extends \Codeception\TestCase\Test
         $result = $collection->run();
 
         // Ensure that the results have the correct key values
-        verify(implode(',', array_keys($result->getData())))->equals('a-name,b-name,special-before-name');
+        verify(implode(',', array_keys($result->getData())))->equals('a-name,b-name,special-before-name,time');
 
         // The result from the 'before' task is attached
         // to 'b-name', since it was called as before('b-name', ...)
@@ -99,7 +91,7 @@ class CollectionTest extends \Codeception\TestCase\Test
 
     public function testAddCodeRollbackAndCompletion()
     {
-        $collection = $this->container->get('collection');
+        $collection = new Collection();
         $rollback1 = new CountingTask();
         $rollback2 = new CountingTask();
         $completion1 = new CountingTask();
@@ -116,6 +108,8 @@ class CollectionTest extends \Codeception\TestCase\Test
             ->rollback($rollback2)
             ->completion($completion2)
             ->addCode(function () { return 13; });
+
+        $collection->setLogger($this->guy->logger());
 
         $result = $collection->run();
         // Execution stops on the first error.

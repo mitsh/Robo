@@ -1,7 +1,6 @@
 <?php
 $I = new CliGuy($scenario);
-$container = Robo\Config::getContainer();
-$I->getContainer()->addServiceProvider(\Robo\Task\FileSystem\loadTasks::getFileSystemServices());
+$container = Robo\Robo::getContainer();
 
 $I->wantTo('delete dir with DeleteDirTask');
 $I->amInPath(codecept_data_dir());

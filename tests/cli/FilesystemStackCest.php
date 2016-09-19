@@ -4,7 +4,6 @@ class FilesystemStackCest
 {
     public function _before(CliGuy $I)
     {
-        $I->getContainer()->addServiceProvider(\Robo\Task\Filesystem\loadTasks::getFilesystemServices());
         $I->amInPath(codecept_data_dir().'sandbox');
     }
 
@@ -42,7 +41,8 @@ class FilesystemStackCest
         $class = new ReflectionClass('\Robo\Task\Filesystem\FilesystemStack');
         $method = $class->getMethod('crossVolumeRename');
         $method->setAccessible(true);
-        $method->invokeArgs($fsStack, ['log', 'logfiles']);
+        $actualFsStackTask = $fsStack->getCollectionBuilderCurrentTask();
+        $method->invokeArgs($actualFsStackTask, ['log', 'logfiles']);
 
         $I->dontSeeFileFound('log/error.txt');
         $I->seeFileFound('logfiles/error.txt');

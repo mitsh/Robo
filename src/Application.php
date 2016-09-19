@@ -7,20 +7,24 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
-
-class Application extends SymfonyApplication implements ContainerAwareInterface
+class Application extends SymfonyApplication
 {
-    use ContainerAwareTrait;
-
     public function __construct($name, $version)
     {
         parent::__construct($name, $version);
 
-        $this->getDefinition()->addOption(
-            new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
-        );
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--simulate', null, InputOption::VALUE_NONE, 'Run in simulated mode (show what would have happened).')
+            );
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--progress-delay', null, InputOption::VALUE_REQUIRED, 'Number of seconds before progress bar is displayed in long-running task collections. Default: 2s.', Config::DEFAULT_PROGRESS_DELAY)
+            );
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--supress-messages', null, InputOption::VALUE_NONE, 'Supress all Robo TaskIO messages.')
+            );
     }
 
     public function addInitRoboFileCommand($roboFile, $roboClass)
@@ -28,9 +32,9 @@ class Application extends SymfonyApplication implements ContainerAwareInterface
         $createRoboFile = new Command('init');
         $createRoboFile->setDescription("Intitalizes basic RoboFile in current dir");
         $createRoboFile->setCode(function () use ($roboClass, $roboFile) {
-            $output = Config::output();
+            $output = Robo::output();
             $output->writeln("<comment>  ~~~ Welcome to Robo! ~~~~ </comment>");
-            $output->writeln("<comment>  ". $roboFile ." will be created in current dir </comment>");
+            $output->writeln("<comment>  ". basename($roboFile) ." will be created in the current directory </comment>");
             file_put_contents(
                 $roboFile,
                 '<?php'
@@ -41,7 +45,7 @@ class Application extends SymfonyApplication implements ContainerAwareInterface
                 . "\n */"
                 . "\nclass " . $roboClass . " extends \\Robo\\Tasks\n{\n    // define public methods as commands\n}"
             );
-            $output->writeln("<comment>  Edit RoboFile.php to add your commands! </comment>");
+            $output->writeln("<comment>  Edit this file to add your commands! </comment>");
         });
         $this->add($createRoboFile);
     }

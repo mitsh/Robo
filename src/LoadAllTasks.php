@@ -1,11 +1,11 @@
 <?php
 namespace Robo;
 
-use Robo\Collection\Collection;
-
 trait LoadAllTasks
 {
     use TaskAccessor;
+
+    use Collection\loadTasks;
 
     // standard tasks
     use Task\Base\loadTasks;
@@ -36,20 +36,4 @@ trait LoadAllTasks
     use Task\Base\loadShortcuts;
     use Task\Filesystem\loadShortcuts;
     use Task\Vcs\loadShortcuts;
-
-    /**
-     * Convenience function. Use:
-     *
-     * $this->collection();
-     *
-     * instead of:
-     *
-     * $this->getContainer()->get('collection');
-     *
-     * @return Collection
-     */
-    protected function collection()
-    {
-        return $this->getContainer()->get('collection');
-    }
 }

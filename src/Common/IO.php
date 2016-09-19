@@ -1,7 +1,7 @@
 <?php
 namespace Robo\Common;
 
-use Robo\Config;
+use Robo\Robo;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,46 +9,62 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 trait IO
 {
-    /**
-     * @return OutputInterface
-     */
-    protected function getOutput()
-    {
-        if (!Config::hasService('output')) {
-            return new NullOutput();
-        }
-        return Config::output();
-    }
+    use InputAwareTrait;
+    use OutputAwareTrait;
+
+    /** var: SymfonyStyle */
+    protected $io;
 
     /**
-     * @return InputInterface
+     * Provide access to SymfonyStyle object.
+     * See: http://symfony.com/blog/new-in-symfony-2-8-console-style-guide
+     * @return SymfonyStyle
      */
-    protected function getInput()
+    protected function io()
     {
-        if (!Config::hasService('input')) {
-            return new ArgvInput();
+        if (!$this->io) {
+            $this->io = new SymfonyStyle($this->input(), $this->output());
         }
-        return Config::input();
+        return $this->io;
+    }
+
+    protected function decorationCharacter($nonDecorated, $decorated)
+    {
+        if (!$this->output()->isDecorated() || (strncasecmp(PHP_OS, 'WIN', 3) == 0)) {
+            return $nonDecorated;
+        }
+        return $decorated;
     }
 
     protected function say($text)
     {
-        $char = strncasecmp(PHP_OS, 'WIN', 3) == 0 ? '>' : '➜';
+        $char = $this->decorationCharacter('>', '➜');
         $this->writeln("$char  $text");
     }
 
     protected function yell($text, $length = 40, $color = 'green')
     {
-        $char = strncasecmp(PHP_OS, 'WIN', 3) == 0 ? ' ' : '➜';
+        $char = $this->decorationCharacter(' ', '➜');
         $format = "$char  <fg=white;bg=$color;options=bold>%s</fg=white;bg=$color;options=bold>";
-        $text = str_pad($text, $length, ' ', STR_PAD_BOTH);
-        $len = strlen($text) + 2;
+        $this->formattedOutput($text, $length, $format);
+    }
+
+    private function formattedOutput($text, $length, $format)
+    {
+        $lines = explode("\n", trim($text, "\n"));
+        $maxLineLength = array_reduce(array_map('strlen', $lines), 'max');
+        $length = max($length, $maxLineLength);
+        $len = $length + 2;
         $space = str_repeat(' ', $len);
         $this->writeln(sprintf($format, $space));
-        $this->writeln(sprintf($format, " $text "));
+        foreach ($lines as $line) {
+            $line = str_pad($line, $length, ' ', STR_PAD_BOTH);
+            $this->writeln(sprintf($format, " $line "));
+        }
         $this->writeln(sprintf($format, $space));
     }
 
@@ -79,7 +95,7 @@ trait IO
 
     private function doAsk(Question $question)
     {
-        return $this->getDialog()->ask($this->getInput(), $this->getOutput(), $question);
+        return $this->getDialog()->ask($this->input(), $this->output(), $question);
     }
 
     private function formatQuestion($message)
@@ -94,6 +110,6 @@ trait IO
 
     private function writeln($text)
     {
-        $this->getOutput()->writeln($text);
+        $this->output()->writeln($text);
     }
 }

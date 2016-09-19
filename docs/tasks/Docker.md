@@ -21,18 +21,11 @@ Class Build
 @package Robo\Task\Docker
 
 * `tag($tag)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -58,18 +51,11 @@ $task->dockerCommit($result)
 ```
 
 * `name($name)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -102,18 +88,11 @@ $this->taskDockerExec($test)
 * `detached()` 
 * `interactive()` 
 * `exec($command)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -131,18 +110,11 @@ $this->taskDockerPull('wordpress')
 ```
 
 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -159,18 +131,11 @@ $this->taskDockerRemove($container)
 ```
 
 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -231,18 +196,14 @@ $this->taskDockerRun('wordpress')
 * `privileged()` 
 * `name($name)` 
 * `link($name, $alias)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
+* `tmpDir($dir)` 
+* `getTmpDir()` 
+* `getUniqId()` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -258,18 +219,11 @@ $this->taskDockerStart($cidOrResult)
 ?>
 ```
 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -285,18 +239,11 @@ $this->taskDockerStop($cidOrResult)
 ?>
 ```
 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 

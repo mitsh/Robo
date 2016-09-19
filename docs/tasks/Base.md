@@ -24,18 +24,11 @@ if ($this->taskExec('phpunit .')->run()->wasSuccessful()) {
 * `idleTimeout($timeout)`  Stops command if it does not output something for a while
 * `env(array $env)`  Sets the environment variables for the command
 * `simulate($context)`  Called in place of `run()` for simulated tasks.
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
-* `arg($arg)`  Pass argument to executable
-* `args($args)`  Pass methods parameters as arguments to executable
+* `arg($arg)`  Pass argument to executable. Its value will be automatically escaped.
+* `args($args)`  Pass methods parameters as arguments to executable. Argument values
+* `rawArg($arg)`  Pass the provided string in its raw (as provided) form as an argument to executable.
 * `option($option, $value = null)`  Pass option to executable. Options are prefixed with `--` , value can be provided in second parameter.
 * `optionList($option, $value = null)`  Pass multiple options to executable. Value can be a string or array.
 
@@ -62,14 +55,6 @@ $this->taskExecStack()
 * `exec($command)` 
 * `stopOnFail($stopOnFail = null)` 
 * `result($result)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 * `dir($dir)`  changes working directory of command
 * `printed($arg)`  Should command output be printed
 
@@ -96,21 +81,6 @@ $this->taskParallelExec()
 * `process($command)` 
 * `timeout($timeout)` 
 * `idleTimeout($idleTimeout)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
-* `setProgressIndicator($progressIndicator)` 
-* `inProgress()` 
-* `startProgressIndicator($totalSteps = null)` 
-* `stopProgressIndicator()` 
-* `hideProgressIndicator()` 
-* `showProgressIndicator()` 
-* `advanceProgressIndicator($steps = null)` 
 
 ## SymfonyCommand
 
@@ -134,14 +104,6 @@ $this->taskSymfonyCommand(new ModelGeneratorCommand())
 
 * `arg($arg, $value)` 
 * `opt($option, $value = null)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 
 ## Watch
 
@@ -161,12 +123,4 @@ $this->taskWatch()
 ```
 
 * `monitor($paths, $callable)` 
-* `setLogger($logger)`  Sets a logger.
-* `setContainer($container)`  Set a container.
-* `getContainer()`  Get the container.
-* `logger()` 
-* `addToCollection($collection, $taskName = null, $rollbackTask = null)` 
-* `addAsRollback($collection)` 
-* `addAsCompletion($collection)` 
-* `addToCollectionAndIgnoreErrors($collection, $taskName = null)` 
 

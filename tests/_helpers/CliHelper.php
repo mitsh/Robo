@@ -1,7 +1,7 @@
 <?php
 namespace Codeception\Module;
 
-use Robo\Config;
+use Robo\Robo;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\NullOutput;
 
@@ -11,6 +11,7 @@ use League\Container\ContainerAwareTrait;
 class CliHelper extends \Codeception\Module implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
+    use SeeInOutputTrait;
 
     use \Robo\LoadAllTasks {
         task as public;
@@ -27,11 +28,20 @@ class CliHelper extends \Codeception\Module implements ContainerAwareInterface
         taskFlattenDir as public;
         taskFilesystemStack as public;
         taskTmpDir as public;
+        taskMinify as public;
         _copyDir as public shortcutCopyDir;
         _mirrorDir as public shortcutMirrorDir;
         _tmpDir as public shortcutTmpDir;
         taskPack as public;
         taskExtract as public;
+    }
+
+    public function collectionBuilder()
+    {
+        $tasks = new \Robo\Tasks();
+        $builder = $this->getContainer()->get('collectionBuilder', [$tasks]);
+        $tasks->setBuilder($builder);
+        return $builder;
     }
 
     public function seeDirFound($dir)
@@ -40,9 +50,12 @@ class CliHelper extends \Codeception\Module implements ContainerAwareInterface
     }
 
     public function _before(\Codeception\TestCase $test) {
+        $container = new \League\Container\Container();
+        $this->initSeeInOutputTrait($container);
+        Robo::setContainer($container);
+        $this->setContainer($container);
+
         $this->getModule('Filesystem')->copyDir(codecept_data_dir().'claypit', codecept_data_dir().'sandbox');
-        $this->setContainer(Config::getContainer());
-        $this->getContainer()->add('output', new NullOutput());
     }
 
     public function _after(\Codeception\TestCase $test) {

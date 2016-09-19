@@ -4,31 +4,32 @@ namespace Robo\Task;
 use Robo\Common\InflectionTrait;
 use Robo\Contract\InflectionInterface;
 
-use Robo\Common\Configuration;
 use Robo\Common\TaskIO;
-use Robo\TaskAccessor;
-use Robo\Collection\Collectable;
 use Robo\Contract\TaskInterface;
+use Robo\Contract\ProgressIndicatorAwareInterface;
+use Robo\Common\ProgressIndicatorAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Psr\Log\LoggerAwareInterface;
 
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
-
-abstract class BaseTask implements TaskInterface, LoggerAwareInterface, InflectionInterface
+abstract class BaseTask implements TaskInterface, LoggerAwareInterface, ConfigAwareInterface, ProgressIndicatorAwareInterface, InflectionInterface
 {
-    use TaskIO; // uses LoggerAwareTrait
+    use TaskIO; // uses LoggerAwareTrait and ConfigAwareTrait
+    use ProgressIndicatorAwareTrait;
     use InflectionTrait;
-
-    use Configuration;
-    use Collectable;
 
     /**
      * {inheritdoc}
      */
     public function injectDependencies(InflectionInterface $child)
     {
-        if ($child instanceof LoggerAwareInterface) {
+        if ($child instanceof LoggerAwareInterface && $this->logger) {
             $child->setLogger($this->logger);
+        }
+        if ($child instanceof ProgressIndicatorAwareInterface && $this->progressIndicator) {
+            $child->setProgressIndicator($this->progressIndicator);
+        }
+        if ($child instanceof ConfigAwareInterface && $this->getConfig()) {
+            $child->setConfig($this->getConfig());
         }
     }
 }

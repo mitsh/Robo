@@ -1,16 +1,9 @@
 <?php
 use Codeception\Util\Stub;
-use Robo\Config;
+use Robo\Robo;
 
 class CommandStackTest extends \Codeception\TestCase\Test
 {
-    protected $container;
-
-    protected function _before()
-    {
-        $this->container = Config::getContainer();
-    }
-
     public function testExecStackExecutableIsTrimmedFromCommand()
     {
         $commandStack = Stub::make('Robo\Task\CommandStack');

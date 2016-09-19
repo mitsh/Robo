@@ -1,149 +1,103 @@
 <?php
 namespace Robo;
 
-use League\Container\Container;
-use League\Container\ContainerInterface;
-
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\StringInput;
-
 class Config
 {
-    protected static $simulated;
-    protected static $config = [];
+    const PROGRESS_BAR_AUTO_DISPLAY_INTERVAL = 'progress-delay';
+    const DEFAULT_PROGRESS_DELAY = 2;
+    const SIMULATE = 'simulate';
+    const SUPRESS_MESSAGES = 'supress-messages';
+    const DECORATED = 'decorated';
+
+    protected $config = [];
 
     /**
-     * The currently active container object, or NULL if not initialized yet.
-     *
-     * @var ContainerInterface|null
-     */
-    protected static $container;
-
-    /**
-     * Sets a new global container.
-     *
-     * @param ContainerInterface $container
-     *   A new container instance to replace the current.
-     */
-    public static function setContainer(ContainerInterface $container)
-    {
-        static::$container = $container;
-    }
-
-    /**
-     * Unsets the global container.
-     */
-    public static function unsetContainer()
-    {
-        static::$container = null;
-    }
-
-    /**
-     * Returns the currently active global container.
-     *
-     * @return \League\Container\ContainerInterface|null
-     *
-     * @throws \RuntimeException
-     */
-    public static function getContainer()
-    {
-        if (static::$container === null) {
-            throw new \RuntimeException('container is not initialized yet. \Robo\Config::setContainer() must be called with a real container.');
-        }
-        return static::$container;
-    }
-
-    /**
-     * Returns TRUE if the container has been initialized, FALSE otherwise.
-     *
-     * @return bool
-     */
-    public static function hasContainer()
-    {
-        return static::$container !== null;
-    }
-
-    /**
-     * Retrieves a service from the container.
-     *
-     * Use this method if the desired service is not one of those with a dedicated
-     * accessor method below. If it is listed below, those methods are preferred
-     * as they can return useful type hints.
-     *
-     * @param string $id
-     *   The ID of the service to retrieve.
-     *
+     * Fet a configuration value
+     * @param string $key Which config item to look up
+     * @param string|null $defaultOverride Override usual default value with a different default
      * @return mixed
-     *   The specified service.
      */
-    public static function service($id)
+    public function get($key, $defaultOverride = null)
     {
-        return static::getContainer()->get($id);
+        if (isset($this->config[$key])) {
+            return $this->config[$key];
+        }
+        return $this->getDefault($key, $defaultOverride);
     }
 
     /**
-     * Indicates if a service is defined in the container.
-     *
-     * @param string $id
-     *   The ID of the service to check.
-     *
-     * @return bool
-     *   TRUE if the specified service exists, FALSE otherwise.
+     * Set a configu value
+     * @param string $key
+     * @param mixed $value
+     * @return Config
      */
-    public static function hasService($id)
+    public function set($key, $value)
     {
-        // Check hasContainer() first in order to always return a Boolean.
-        return static::hasContainer() && static::getContainer()->has($id);
+        $this->config[$key] = $value;
+        return $this;
     }
 
     /**
-     * Return the result printer object.
-     *
-     * @return ResultPrinter
+     * Return an associative array containing all of the global configuration
+     * options and their default values.
+     * @return array
      */
-    public static function resultPrinter()
+    public function getGlobalOptionDefaultValues()
     {
-        return static::service('resultPrinter');
+        $globalOptions =
+        [
+            self::PROGRESS_BAR_AUTO_DISPLAY_INTERVAL => self::DEFAULT_PROGRESS_DELAY,
+            self::SIMULATE => false,
+            self::SUPRESS_MESSAGES => false,
+        ];
+
+        return $globalOptions;
     }
 
     /**
-     * Return the output object.
-     *
-     * @return OutputInterface
+     * Return the default value for a given configuration item.
+     * @param string $key
+     * @param string|null $defaultOverride
+     * @return mixed
      */
-    public static function output()
+    public function getDefault($key, $defaultOverride = null)
     {
-        return static::service('output');
+        $globalOptions = $this->getGlobalOptionDefaultValues();
+        return isset($globalOptions[$key]) ? $globalOptions[$key] : $defaultOverride;
     }
 
-    /**
-     * Return the input object.
-     *
-     * @return InputInterface
-     */
-    public static function input()
+    public function isSimulated()
     {
-        return static::service('input');
+        return $this->get(self::SIMULATE);
     }
 
-    public static function get($key, $default = null)
+    public function setSimulated($simulated = true)
     {
-        return isset(self::$config[$key]) ? self::$config[$key] : $default;
+        return $this->set(self::SIMULATE, $simulated);
     }
 
-    public static function set($key, $value)
+    public function isDecorated()
     {
-        self::$config[$key] = $value;
+        return $this->get(self::DECORATED);
     }
 
-    public static function setGlobalOptions($input)
+    public function setDecorated($decorated = true)
     {
-        static::$simulated = $input->getOption('simulate');
+        return $this->set(self::DECORATED, $decorated);
     }
 
-    public static function isSimulated()
+    public function isSupressed()
     {
-        return static::$simulated;
+        return $this->get(self::SUPRESS_MESSAGES);
+    }
+
+    public function setSupressed($supressed = true)
+    {
+        return $this->set(self::SUPRESS_MESSAGES, $supressed);
+    }
+
+    public function setProgressBarAutoDisplayInterval($interval)
+    {
+        return $this->set(self::PROGRESS_BAR_AUTO_DISPLAY_INTERVAL, $interval);
     }
 }
